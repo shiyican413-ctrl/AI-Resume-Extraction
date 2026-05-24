@@ -1,6 +1,6 @@
 import hashlib
-import time
 from dataclasses import dataclass
+from uuid import uuid4
 
 
 @dataclass
@@ -24,7 +24,7 @@ class InMemoryStore:
         if existing_id:
             return self.resume_by_id[existing_id]
 
-        resume_id = f"resume_{int(time.time() * 1000)}"
+        resume_id = f"resume_{uuid4().hex}"
         record = ResumeRecord(
             resume_id=resume_id,
             resume_hash=resume_hash,

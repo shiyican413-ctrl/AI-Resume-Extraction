@@ -23,6 +23,48 @@ function normalizeTextArray(value) {
     .filter((item) => item !== "-");
 }
 
+function joinTextList(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean).join("、");
+  }
+  return value ? String(value).trim() : "";
+}
+
+function formatEducationItem(item) {
+  if (!item || typeof item !== "object" || Array.isArray(item)) {
+    return toDisplayText(item);
+  }
+
+  const parts = [];
+  const degree = item.degree || item["学历"] || item.education;
+  const school = item.school || item["学校"] || item.university;
+  const major = item.major || item["专业"];
+  const period = item.period || item["时间"] || item.date;
+  const courses = item.major_courses || item["主修课程"] || item.courses;
+
+  [degree, school, major, period].forEach((value) => {
+    const text = joinTextList(value);
+    if (text) {
+      parts.push(text);
+    }
+  });
+
+  const coursesText = joinTextList(courses);
+  if (coursesText) {
+    parts.push(`主修：${coursesText}`);
+  }
+
+  return parts.length ? parts.join("，") : toDisplayText(item);
+}
+
+function formatEducation(value) {
+  if (Array.isArray(value)) {
+    const items = value.map((item) => formatEducationItem(item)).filter((item) => item !== "-");
+    return items.length ? items.join("；") : "-";
+  }
+  return formatEducationItem(value);
+}
+
 export default function ResultPanel({ extractData, matchData }) {
   if (!extractData && !matchData) {
     return <div className="result-empty">上传并开始解析后，这里会展示结构化结果。</div>;
@@ -45,9 +87,11 @@ export default function ResultPanel({ extractData, matchData }) {
             <div><span>求职意向</span><strong>{toDisplayText(extractData.job_intention?.position)}</strong></div>
             <div><span>期望薪资</span><strong>{toDisplayText(extractData.job_intention?.expected_salary)}</strong></div>
             <div><span>工作年限</span><strong>{toDisplayText(extractData.background?.years_of_experience)}</strong></div>
-            <div><span>学历</span><strong>{toDisplayText(extractData.background?.education)}</strong></div>
+            <div><span>学历</span><strong>{formatEducation(extractData.background?.education)}</strong></div>
           </div>
           <p className="cache-note">缓存命中：{extractData.cache_hit ? "是" : "否"}</p>
+          <p className="result-label">AI 简短总结</p>
+          <p className="summary-text">{toDisplayText(extractData.summary)}</p>
           <p className="result-label">技能关键词</p>
           <div className="keyword-wrap">
             {skillList.length ? (

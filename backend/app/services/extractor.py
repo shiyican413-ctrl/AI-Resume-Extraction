@@ -119,6 +119,65 @@ def extract_regex_info(text: str) -> dict:
     }
 
 
+def _join_text_list(value: object) -> str:
+    if isinstance(value, list):
+        return "、".join(str(item).strip() for item in value if str(item).strip())
+    return str(value).strip() if value else ""
+
+
+def _format_education_item(item: object) -> str:
+    if not isinstance(item, dict):
+        return str(item).strip()
+
+    parts = []
+    degree = item.get("degree") or item.get("学历") or item.get("education")
+    school = item.get("school") or item.get("学校") or item.get("university")
+    period = item.get("period") or item.get("时间") or item.get("date")
+    major = item.get("major") or item.get("专业")
+    major_courses = item.get("major_courses") or item.get("主修课程") or item.get("courses")
+
+    for value in [degree, school, major, period]:
+        text = _join_text_list(value)
+        if text:
+            parts.append(text)
+
+    courses_text = _join_text_list(major_courses)
+    if courses_text:
+        parts.append(f"主修：{courses_text}")
+
+    return "，".join(parts)
+
+
+def _normalize_education(value: object) -> str:
+    if isinstance(value, list):
+        return "；".join(
+            text for text in (_format_education_item(item) for item in value) if text
+        )
+    return _format_education_item(value)
+
+
+def _build_resume_summary(result: dict) -> str:
+    basic_info = result.get("basic_info", {})
+    job_intention = result.get("job_intention", {})
+    background = result.get("background", {})
+    skills = result.get("skills", [])
+
+    name = basic_info.get("name") or "候选人"
+    position = job_intention.get("position") or "目标岗位暂未明确"
+    education = background.get("education") or "学历信息暂未识别"
+    years = background.get("years_of_experience") or "工作年限暂未识别"
+    skill_text = "、".join(str(skill) for skill in skills[:5]) if skills else "技能关键词暂未识别"
+
+    return (
+        f"{name}的求职方向为{position}，学历背景为{education}，"
+        f"工作年限为{years}，主要技能包括{skill_text}。"
+    )
+
+
+def build_resume_summary(result: dict) -> str:
+    return _build_resume_summary(result)
+
+
 def _extract_json_from_text(raw_text: str) -> dict | None:
     candidate = raw_text.strip()
     if candidate.startswith("```"):
@@ -174,8 +233,9 @@ def enrich_with_ai(text: str, model_name: str | None = None) -> dict | None:
     settings = get_settings()
     prompt = (
         "你是简历信息抽取助手。请从简历文本提取字段，并严格返回 JSON，不要返回解释。"
-        "JSON 字段必须包含：basic_info, job_intention, background, skills。"
-        "其中 background.projects 必须是数组，每项包含 name 和 description。"
+        "JSON 字段必须包含：basic_info, job_intention, background, skills, summary。"
+        "其中 background.education 必须是中文字符串，background.projects 必须是数组，每项包含 name 和 description。"
+        "summary 必须是中文简短总结，控制在60字以内，概括候选人的学历、求职方向和核心技能。"
     )
     model = model_name or settings.model_name
     messages = [
@@ -252,19 +312,23 @@ def ocr_pdf_text(content: bytes, model_name: str, max_pages: int = 3) -> str:
 
 
 def merge_extract_result(base: dict, ai_result: dict | None) -> dict:
-    if not ai_result:
-        return base
-
     merged = json.loads(json.dumps(base, ensure_ascii=False))
 
-    for key in ["basic_info", "job_intention", "background"]:
-        if key in ai_result and isinstance(ai_result[key], dict):
-            merged[key].update({k: v for k, v in ai_result[key].items() if v})
+    if ai_result:
+        for key in ["basic_info", "job_intention", "background"]:
+            if key in ai_result and isinstance(ai_result[key], dict):
+                merged[key].update({k: v for k, v in ai_result[key].items() if v})
 
-    ai_skills = ai_result.get("skills") if isinstance(ai_result.get("skills"), list) else []
-    merged["skills"] = sorted(set(merged.get("skills", []) + [str(item) for item in ai_skills]))
+        ai_skills = ai_result.get("skills") if isinstance(ai_result.get("skills"), list) else []
+        merged["skills"] = sorted(set(merged.get("skills", []) + [str(item) for item in ai_skills]))
 
     if not isinstance(merged["background"].get("projects"), list):
         merged["background"]["projects"] = []
+
+    merged["background"]["education"] = _normalize_education(
+        merged["background"].get("education", "")
+    )
+    ai_summary = ai_result.get("summary") if isinstance(ai_result, dict) else ""
+    merged["summary"] = str(ai_summary).strip() if ai_summary else _build_resume_summary(merged)
 
     return merged

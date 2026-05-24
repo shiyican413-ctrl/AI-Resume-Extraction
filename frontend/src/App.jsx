@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { extractResume, matchResume, uploadResume } from "./api/client";
+import { extractResume, matchResume, saveDebugEnv, uploadResume } from "./api/client";
 import ResultPanel from "./components/ResultPanel";
 
 const MODES = [
@@ -22,15 +22,31 @@ export default function App() {
   const [matchData, setMatchData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [debugKey, setDebugKey] = useState("");
+  const [debugSaving, setDebugSaving] = useState(false);
+  const [debugMessage, setDebugMessage] = useState("");
   const jdFilled = jdText.trim().length > 0;
   const parseDone = Boolean(extractData);
   const matchDone = Boolean(matchData);
+
+  function resetSelectedFile(status = "idle", message = "尚未上传文件") {
+    setFile(null);
+    setResumeMeta(null);
+    setExtractData(null);
+    setMatchData(null);
+    setUploadStatus(status);
+    setUploadMessage(message);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
 
   function readFileFromInput(nextFile) {
     if (!nextFile) {
       return;
     }
     if (nextFile.type && nextFile.type !== "application/pdf") {
+      resetSelectedFile("error", "请选择 PDF 格式的简历文件");
       setError("仅支持 PDF 文件");
       return;
     }
@@ -89,6 +105,24 @@ export default function App() {
     }
   }
 
+  async function saveDebugKey() {
+    if (!debugKey.trim()) {
+      setDebugMessage("请输入模型 API Key");
+      return;
+    }
+
+    setDebugSaving(true);
+    setDebugMessage("");
+    try {
+      await saveDebugEnv(debugKey);
+      setDebugMessage("已生成阿里百炼 .env，后续解析将使用大模型");
+    } catch (e) {
+      setDebugMessage(e.message || "生成 .env 失败");
+    } finally {
+      setDebugSaving(false);
+    }
+  }
+
   return (
     <div className="landing">
       <header className="topbar">
@@ -102,9 +136,21 @@ export default function App() {
           <a href="#docs">开发文档</a>
         </nav>
         <div className="top-actions">
-          <button type="button" className="btn btn-dark">在线体验</button>
-          <button type="button" className="btn btn-primary">申请试用</button>
+          <label className="debug-key-wrap">
+            <span>百炼 Key</span>
+            <input
+              type="password"
+              value={debugKey}
+              onChange={(e) => setDebugKey(e.target.value)}
+              placeholder="输入阿里百炼 API Key"
+              aria-label="阿里百炼 API Key"
+            />
+          </label>
+          <button type="button" className="btn btn-primary" onClick={saveDebugKey} disabled={debugSaving}>
+            {debugSaving ? "生成中..." : "生成 env"}
+          </button>
         </div>
+        {debugMessage ? <div className="debug-message">{debugMessage}</div> : null}
       </header>
 
       <main className="hero">

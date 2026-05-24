@@ -25,7 +25,7 @@ def match_resume(request: MatchRequest) -> dict:
     extract_key = store.extract_cache_key(record.resume_hash, normalized_mode)
     extract_result = store.extract_cache.get(extract_key)
     if not extract_result:
-        raise APIError("请先执行简历信息提取", "RESUME_NOT_FOUND", 400)
+        raise APIError("请先执行简历信息提取", "EXTRACT_NOT_FOUND", 400)
 
     jd_hash = hashlib.sha256(request.jd_text.strip().encode("utf-8")).hexdigest()
     cache_key = store.match_cache_key(record.resume_hash, jd_hash, normalized_mode)

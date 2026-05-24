@@ -114,7 +114,43 @@ a {
 
 .top-actions {
   display: flex;
+  align-items: center;
   gap: 14px;
+}
+
+.debug-key-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #52627f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.debug-key-wrap input {
+  width: 230px;
+  border: 1px solid #c8d2e3;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2b45;
+  font-size: 13px;
+  padding: 10px 12px;
+}
+
+.debug-key-wrap input:focus {
+  outline: 2px solid rgba(95, 111, 232, 0.2);
+  border-color: #8ca0ea;
+}
+
+.debug-message {
+  position: absolute;
+  right: 28px;
+  bottom: 4px;
+  max-width: 360px;
+  color: #1f8a53;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
 }
 
 .btn {
@@ -523,6 +559,14 @@ a {
 
   .top-actions {
     justify-self: start;
+    flex-wrap: wrap;
+  }
+
+  .debug-message {
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+    text-align: left;
   }
 
   .hero {
@@ -560,6 +604,16 @@ a {
   .btn {
     font-size: 14px;
     padding: 10px 14px;
+  }
+
+  .debug-key-wrap {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .debug-key-wrap input {
+    width: min(100%, 320px);
   }
 
   .analyze-btn {

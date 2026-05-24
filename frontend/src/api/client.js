@@ -45,3 +45,11 @@ export async function matchResume(resumeId, jdText, mode = "normal") {
     body: JSON.stringify({ resume_id: resumeId, jd_text: jdText, mode }),
   });
 }
+
+export async function saveDebugEnv(apiKey) {
+  return request("/debug/env", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: apiKey }),
+  });
+}

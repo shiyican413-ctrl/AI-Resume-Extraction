@@ -3,7 +3,7 @@ from fastapi import APIRouter, File, Query, UploadFile
 from app.core.config import get_settings
 from app.core.errors import APIError
 from app.core.response import success_response
-from app.services.extractor import enrich_with_ai, extract_regex_info, merge_extract_result, ocr_pdf_text
+from app.services.extractor import build_resume_summary, enrich_with_ai, extract_regex_info, merge_extract_result, ocr_pdf_text
 from app.services.model_mode import extract_model_for_mode, normalize_mode, ocr_model_for_mode
 from app.services.pdf_parser import parse_pdf_text
 from app.services.store import store
@@ -46,6 +46,9 @@ def extract_resume(resume_id: str, mode: str = Query(default="normal")) -> dict:
     if cache_key in store.extract_cache:
         cached = store.extract_cache[cache_key]
         cached_data = dict(cached)
+        if not cached_data.get("summary"):
+            cached_data["summary"] = build_resume_summary(cached_data)
+            store.extract_cache[cache_key] = {**cached, "summary": cached_data["summary"]}
         cached_data["cache_hit"] = True
         return success_response(cached_data, message="解析成功")
 
