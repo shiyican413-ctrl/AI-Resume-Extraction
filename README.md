@@ -1,16 +1,13 @@
-<img width   宽度="1103" height="603" alt="image" src="https://github.com/user-attachments/assets/a3c73e29-4249-42e0-bada-a2731ff9f548" /><img width   宽度="780" height="611" alt="image" src="https://github.com/user-attachments/assets/dfda02da-8979-4d86-ab06-a4dd209f29de" /><img width   宽度="902" height="589" alt="image" src="https://github.com/user-attachments/assets/5a4b5e59-298f-48f5-b42c-b304aea16743" /># AI 赋能的智能简历分析系统
+<img width   宽度="1103" height="603" alt="image" src="https://github.com/user-attachments/assets/a3c73e29-4249-42e0-bada-a2731ff9f548" /><img width   宽度="780" height="611" alt="image" src="https://github.com/user-attachments/assets/dfda02da-8979-4d86-ab06-a4dd209f29de" /><img width   宽度="902" height="589" alt="image" src="https://github.com/user-attachments/assets/5a4b5e59-298f-48f5-b42c-b304aea16743" /># AI 赋能的智能简历分析系统<img width   宽度="1103" height="603" alt="image" src="https://github.com/user-attachments/assets/a3c73e29-4249-42e0-bada-a2731ff9f548" /><img width   宽度="780" height="611" alt="image" src="https://github.com/user-attachments/assets/dfda02da-8979-4d86-ab06-a4dd209f29de" /><img width   宽度="902" height="589" alt="image" src="https://github.com/user-attachments/assets/5a4b5e59-298f-48f5-b42c-b304aea16743" /># AI 赋能的智能简历分析系统
 
 本项目是一个面向招聘场景的智能简历分析系统，支持上传 PDF 简历，自动解析文本内容，提取候选人关键信息，并结合岗位 JD 计算简历与岗位的匹配度评分。
 
 项目目标是在阿里云 Serverless 环境下完成一个可在线演示的后端服务，并提供简洁可用的前端页面，帮助招聘者快速完成简历初筛。
 
-<img width="1090" height="599" alt="image" src="https://github.com/user-attachments/assets/84ce66be-3bf9-449e-9076-be7106cc8069" />   /比;
+<img width   宽度="1090" height="599" alt="image" src="https://github.com/user-attachments/assets/84ce66be-3bf9-449e-9076-be7106cc8069" /> 
+<img width   宽度="1103" height="603" alt="屏幕截图 2026-05-24 183448" src="https://github.com/user-attachments/assets/79f18f5a-57d6-411a-98fb-763d635d282e" />
+<img width   宽度="780" height="611" alt="屏幕截图 2026-05-24 183404" src="https://github.com/user-attachments/assets/755f89e7-24c8-46a4-ad4a-57a6186c897c" />
 
-
-![Uploading image.png…   上传image.png…]()
-
-
-![Uploading image.png…   上传image.png…]()
 
 
 
@@ -33,22 +30,22 @@
 
 | 模块 | 技术 |
 | --- | --- |
-| 后端框架 | Python + FastAPI |
+| 后端框架 | Python + FastAPI |   | 后端框架 | Python   FastAPI |
 | 运行环境 | 阿里云函数计算 FC |
 | API 暴露 | 阿里云 API 网关 / FC HTTP 触发器 |
 | PDF 解析 | PyMuPDF，pdfplumber 作为兜底 |
 | AI 模型 | 阿里云 DashScope 通义千问 / 兼容 OpenAI API 的大模型 |
 | 缓存 | Redis / 阿里云 Tair |
 | 文件存储 | 阿里云 OSS，可选 |
-| 前端 | React + Vite |
+| 前端 | React + Vite |   | 前端 | React   Vite |
 | 前端部署 | GitHub Pages |
 
 ## 项目结构
 
-```text
+```text   ' ' '文本
 resume-ai-analyzer/
 ├── backend/
-│   ├── app/
+│   ├── app/《我爱你》
 │   │   ├── api/                 # RESTful API 路由
 │   │   ├── core/                # 配置、日志、异常处理
 │   │   ├── models/              # Pydantic 数据模型
