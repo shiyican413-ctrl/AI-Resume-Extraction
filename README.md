@@ -14,6 +14,10 @@
 
 ![解析结果与岗位匹配](docs/images/02-analysis-and-match-result.png)
 
+### 匹配度较低示例
+
+![匹配度较低示例](docs/images/03-low-match-result.png)
+
 ## 核心功能
 
 - PDF 简历上传与多页文本解析
@@ -126,6 +130,8 @@ CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 - `docs/test-pdfs/frontend_react_resume.pdf`
 - `docs/test-pdfs/data_algorithm_resume.pdf`
 - `docs/test-pdfs/product_operation_resume.pdf`
+
+可用 `data_algorithm_resume.pdf` 搭配“项目运营”作为 JD，演示匹配度较低或岗位方向不一致的场景。
 
 后端测试：
 
