@@ -71,7 +71,7 @@ multipart/form-data
   "success": true,
   "message": "上传成功",
   "data": {
-    "resume_id": "resume_202405240001",
+    "resume_id": "resume_8f1b0d2e9f0f4a3fa0a4d8d44d3a0b1c",
     "resume_hash": "f3b9a1...",
     "file_name": "张三_后端开发.pdf"
   }
@@ -84,6 +84,12 @@ multipart/form-data
 
 解析指定简历文本，并使用 AI 提取结构化信息。
 
+查询参数：
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| mode | string | 否 | 解析模式：`normal`、`fast`、`precise`，默认 `normal` |
+
 响应示例：
 
 ```json
@@ -91,8 +97,10 @@ multipart/form-data
   "success": true,
   "message": "解析成功",
   "data": {
-    "resume_id": "resume_202405240001",
+    "resume_id": "resume_8f1b0d2e9f0f4a3fa0a4d8d44d3a0b1c",
+    "mode": "normal",
     "cache_hit": false,
+    "summary": "候选人具备 Python 后端经验，熟悉 FastAPI、Redis 和 MySQL，适合后端开发岗位。",
     "basic_info": {
       "name": "张三",
       "phone": "13800138000",
@@ -128,8 +136,9 @@ multipart/form-data
 
 ```json
 {
-  "resume_id": "resume_202405240001",
-  "jd_text": "岗位要求：3年以上 Python 后端开发经验，熟悉 FastAPI、Redis、MySQL，有云服务部署经验。"
+  "resume_id": "resume_8f1b0d2e9f0f4a3fa0a4d8d44d3a0b1c",
+  "jd_text": "岗位要求：3年以上 Python 后端开发经验，熟悉 FastAPI、Redis、MySQL，有云服务部署经验。",
+  "mode": "normal"
 }
 ```
 
@@ -140,7 +149,8 @@ multipart/form-data
   "success": true,
   "message": "匹配完成",
   "data": {
-    "resume_id": "resume_202405240001",
+    "resume_id": "resume_8f1b0d2e9f0f4a3fa0a4d8d44d3a0b1c",
+    "mode": "normal",
     "cache_hit": false,
     "score": {
       "total": 86,
@@ -176,7 +186,35 @@ multipart/form-data
 }
 ```
 
-## 7. 错误码
+## 7. 调试生成环境变量
+
+### POST /debug/env
+
+调试阶段使用。前端输入阿里百炼 API Key 后，后端会自动生成 `backend/.env`，并刷新配置缓存。此接口不会返回 Key 明文。
+
+请求示例：
+
+```json
+{
+  "api_key": "sk-xxxx"
+}
+```
+
+响应示例：
+
+```json
+{
+  "success": true,
+  "message": "调试环境变量已生成",
+  "data": {
+    "configured": true,
+    "provider": "aliyun-bailian",
+    "env_file": "C:\\Users\\31569\\Desktop\\面试笔试\\backend\\.env"
+  }
+}
+```
+
+## 8. 错误码
 
 | 错误码 | 说明 |
 | --- | --- |
@@ -184,7 +222,8 @@ multipart/form-data
 | FILE_TOO_LARGE | 文件过大 |
 | PDF_PARSE_FAILED | PDF 解析失败 |
 | RESUME_NOT_FOUND | 简历不存在 |
+| EXTRACT_NOT_FOUND | 请先执行简历信息提取 |
 | JD_EMPTY | 岗位描述不能为空 |
 | AI_SERVICE_ERROR | AI 模型服务调用失败 |
+| INVALID_REQUEST | 请求参数不合法 |
 | INTERNAL_ERROR | 服务内部错误 |
-
