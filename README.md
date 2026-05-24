@@ -1,8 +1,21 @@
-# AI 赋能的智能简历分析系统
+<img width   宽度="1103" height="603" alt="image" src="https://github.com/user-attachments/assets/a3c73e29-4249-42e0-bada-a2731ff9f548" /><img width   宽度="780" height="611" alt="image" src="https://github.com/user-attachments/assets/dfda02da-8979-4d86-ab06-a4dd209f29de" /><img width   宽度="902" height="589" alt="image" src="https://github.com/user-attachments/assets/5a4b5e59-298f-48f5-b42c-b304aea16743" /># AI 赋能的智能简历分析系统
 
 本项目是一个面向招聘场景的智能简历分析系统，支持上传 PDF 简历，自动解析文本内容，提取候选人关键信息，并结合岗位 JD 计算简历与岗位的匹配度评分。
 
 项目目标是在阿里云 Serverless 环境下完成一个可在线演示的后端服务，并提供简洁可用的前端页面，帮助招聘者快速完成简历初筛。
+
+<img width="1090" height="599" alt="image" src="https://github.com/user-attachments/assets/84ce66be-3bf9-449e-9076-be7106cc8069" />   /比;
+
+
+![Uploading image.png…   上传image.png…]()
+
+
+![Uploading image.png…   上传image.png…]()
+
+
+
+
+
 
 ## 核心功能
 
